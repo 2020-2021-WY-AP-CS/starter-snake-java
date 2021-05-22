@@ -1,4 +1,4 @@
-package com.battlesnake.starter;
+package com.battlesnake.wy;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -52,7 +52,7 @@ public class SnakeTest {
         JsonNode moveRequest = OBJECT_MAPPER.readTree("{}");
         Map<String, String> response = handler.move(moveRequest);
 
-        List<String> options = new ArrayList<String>();
+        List<String> options = new ArrayList<>();
         options.add("up");
         options.add("down");
         options.add("left");

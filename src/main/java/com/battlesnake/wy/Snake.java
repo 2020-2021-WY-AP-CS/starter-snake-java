@@ -1,4 +1,4 @@
-package com.battlesnake.starter;
+package com.battlesnake.wy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -26,6 +27,9 @@ public class Snake {
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     private static final Handler HANDLER = new Handler();
     private static final Logger LOG = LoggerFactory.getLogger(Snake.class);
+
+    private static int height;
+    private static int width;
 
     /**
      * Main entry point.
@@ -119,8 +123,17 @@ public class Snake {
          */
         public Map<String, String> start(JsonNode startRequest) {
             LOG.info("START");
+
+            JsonNode board = startRequest.get("board");
+
+            height = board.get("height").asInt();
+            width = board.get("width").asInt();
+
+            LOG.info("START set height to "+height+" and width to "+width);
             return EMPTY;
         }
+
+
 
         /**
          * This method is called on every turn of a game. It's how your snake decides
@@ -146,11 +159,34 @@ public class Snake {
                 int height = moveRequest.get("board").get("height").asInt();
 
             */
+            JsonNode headJ = moveRequest.get("head");
+            Posn headP = BattleJson.toPosn(headJ);
+
+            JsonNode bodyJ = moveRequest.get("body");
+            ArrayList<Posn> body = new ArrayList<>();
+            for (JsonNode oneBodyPart : bodyJ) {
+                body.add(BattleJson.toPosn(oneBodyPart));
+            }
 
             String[] possibleMoves = { "up", "down", "left", "right" };
+            ArrayList<Integer> okIndices = new ArrayList<>();
+
+            for (int k=0; k<possibleMoves.length; k++) {
+                Posn dir = Posn.ALL_DIRECTIONS[k];
+                Posn new_head = headP.add(dir);
+
+                boolean inBounds = (0 <= new_head.x && new_head.x < width && 0 <= new_head.y && new_head.y < height);
+                boolean hitSelf = body.contains(new_head);
+
+                if (inBounds && ! hitSelf) {
+                    okIndices.add(k);
+                }
+            }
 
             // Choose a random direction to move in
-            int choice = new Random().nextInt(possibleMoves.length);
+            int choiceIndex = new Random().nextInt(okIndices.size());
+            int choice = okIndices.get(choiceIndex);
+
             String move = possibleMoves[choice];
 
             LOG.info("MOVE {}", move);
