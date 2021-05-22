@@ -22,7 +22,7 @@ public class SimpleSnakeAI extends SnakeAI {
             }
         }
 
-        Posn choice = srnd.get_first_move(moves, Posn.UP);
+        Posn choice = srnd.get_random_move(moves, Posn.UP);
         response.put("move", choice.asDirectionString());
 
         return response;
