@@ -23,6 +23,7 @@ public class SimpleSnakeAI extends SnakeAI {
 
         Posn head = you.head();
         List<Posn> body = you.body();
+
         ArrayList<Posn> moves = new ArrayList<>();
         for (Posn dir : Posn.ALL_DIRECTIONS) {
             Posn dest = head.add(dir);
