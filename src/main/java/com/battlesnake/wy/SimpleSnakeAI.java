@@ -3,20 +3,8 @@ package com.battlesnake.wy;
 import java.util.*;
 
 public class SimpleSnakeAI extends SnakeAI {
+    protected SnakeRandom srnd = new SnakeRandom();
 
-    private Random rng = new Random();
-
-    /**
-     *
-     * @param moves Choices to pick randomly between.
-     * @param defaultMove The move to respond when there are no choices.
-     * @return The randomly chosen move.
-     */
-    public Posn get_random_move(List<Posn> moves, Posn defaultMove) {
-        if (moves.size()==0) return defaultMove;
-
-        return moves.get(rng.nextInt(moves.size()));
-    }
     @Override
     public Map<String, String> move(Game game, int turn, Board board, Battlesnake you) {
         Map<String, String> response = new HashMap<>();
@@ -34,7 +22,7 @@ public class SimpleSnakeAI extends SnakeAI {
             }
         }
 
-        Posn choice = get_random_move(moves, Posn.UP);
+        Posn choice = srnd.get_first_move(moves, Posn.UP);
         response.put("move", choice.asDirectionString());
 
         return response;

@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public abstract class SnakeAI {
 
@@ -59,4 +61,5 @@ public abstract class SnakeAI {
     public void end(Game game, int turn, Board board, Battlesnake you) {
         LOG.debug("game ended");
     }
+
 }
