@@ -51,7 +51,7 @@ Now you're ready to start customizing your Battlesnake's appearance and behavior
 
 ### Changing Appearance
 
-Locate the `index` method inside [Snake.java](src/main/java/com/battlesnake/starter/Snake.java#L102). You should see code that looks like this:
+Locate the `index` method inside `Snake.java`. You should see code that looks like this:
 ```java
 Map<String, String> response = new HashMap<>();
 response.put("apiversion", "1");
@@ -70,7 +70,7 @@ Whenever you update these values, you can refresh your Battlesnake on [your prof
 
 On every turn of each game your Battlesnake receives information about the game board and must decide its next move.
 
-Locate the `move` method inside [Snake.java](src/main/java/com/battlesnake/starter/Snake.java#L134). You should see code that looks like this:
+Locate the `move` method inside `Snake.java`. You should see code that looks like this:
 ```java
 public Map<String, String> move(JsonNode moveRequest) {
 

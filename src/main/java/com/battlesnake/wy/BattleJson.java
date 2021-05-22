@@ -57,10 +57,10 @@ public class BattleJson {
         return new Game(id, ruleset, timeout);
     }
 
-    private static String getStr(JsonNode j, String key) {
+    public static String getStr(JsonNode j, String key) {
         return j.get(key).asText();
     }
-    private static int getInt(JsonNode j, String key) {
+    public static int getInt(JsonNode j, String key) {
         return j.get(key).asInt();
     }
 

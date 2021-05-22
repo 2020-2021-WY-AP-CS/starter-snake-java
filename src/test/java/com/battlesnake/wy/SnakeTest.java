@@ -37,7 +37,7 @@ public class SnakeTest {
         assertEquals("default", response.get("headType"));
         assertEquals("default", response.get("tailType"));
     }
-
+/*
     @Test
     void startTest() throws IOException {
         JsonNode startRequest = OBJECT_MAPPER.readTree("{}");
@@ -67,4 +67,5 @@ public class SnakeTest {
         Map<String, String> response = handler.end(endRequest);
         assertEquals(0, response.size());
     }
+ */
 }

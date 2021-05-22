@@ -28,8 +28,7 @@ public class Snake {
     private static final Handler HANDLER = new Handler();
     private static final Logger LOG = LoggerFactory.getLogger(Snake.class);
 
-    private static int height;
-    private static int width;
+    protected static SnakeAI AI_HANDLER;
 
     /**
      * Main entry point.
@@ -49,8 +48,12 @@ public class Snake {
         post("/start", HANDLER::process, JSON_MAPPER::writeValueAsString);
         post("/move", HANDLER::process, JSON_MAPPER::writeValueAsString);
         post("/end", HANDLER::process, JSON_MAPPER::writeValueAsString);
+        selfInit();
     }
 
+    public static void selfInit() {
+        AI_HANDLER = new SimpleSnakeAI();
+    }
     /**
      * Handler class for dealing with the routes set up in the main method.
      */
@@ -77,11 +80,14 @@ public class Snake {
                 if (uri.equals("/")) {
                     snakeResponse = index();
                 } else if (uri.equals("/start")) {
-                    snakeResponse = start(parsedRequest);
+                    snakeResponse = AI_HANDLER.dispatch(parsedRequest,
+                            SnakeAI.EVENT_START);
                 } else if (uri.equals("/move")) {
-                    snakeResponse = move(parsedRequest);
+                    snakeResponse = AI_HANDLER.dispatch(parsedRequest,
+                            SnakeAI.EVENT_MOVE);
                 } else if (uri.equals("/end")) {
-                    snakeResponse = end(parsedRequest);
+                    snakeResponse = AI_HANDLER.dispatch(parsedRequest,
+                            SnakeAI.EVENT_END);
                 } else {
                     throw new IllegalAccessError("Strange call made to the snake: " + uri);
                 }
@@ -93,7 +99,6 @@ public class Snake {
             }
         }
 
-    
         /**
          * This method is called everytime your Battlesnake is entered into a game.
          * 
@@ -112,105 +117,6 @@ public class Snake {
             return response;
         }
 
-        /**
-         * This method is called everytime your Battlesnake is entered into a game.
-         * 
-         * Use this method to decide how your Battlesnake is going to look on the board.
-         *
-         * @param startRequest a JSON data map containing the information about the game
-         *                     that is about to be played.
-         * @return responses back to the engine are ignored.
-         */
-        public Map<String, String> start(JsonNode startRequest) {
-            LOG.info("START");
-
-            JsonNode board = startRequest.get("board");
-
-            height = board.get("height").asInt();
-            width = board.get("width").asInt();
-
-            LOG.info("START set height to "+height+" and width to "+width);
-            return EMPTY;
-        }
-
-
-
-        /**
-         * This method is called on every turn of a game. It's how your snake decides
-         * where to move.
-         * 
-         * Valid moves are "up", "down", "left", or "right".
-         *
-         * @param moveRequest a map containing the JSON sent to this snake. Use this
-         *                    data to decide your next move.
-         * @return a response back to the engine containing Battlesnake movement values.
-         */
-        public Map<String, String> move(JsonNode moveRequest) {
-            try {
-                LOG.info("Data: {}", JSON_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(moveRequest));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-
-            /*
-                Example how to retrieve data from the request payload:
-
-                String gameId = moveRequest.get("game").get("id").asText();
-                int height = moveRequest.get("board").get("height").asInt();
-
-            */
-            JsonNode headJ = moveRequest.get("head");
-            Posn headP = BattleJson.toPosn(headJ);
-
-            JsonNode bodyJ = moveRequest.get("body");
-            ArrayList<Posn> body = new ArrayList<>();
-            for (JsonNode oneBodyPart : bodyJ) {
-                body.add(BattleJson.toPosn(oneBodyPart));
-            }
-
-            String[] possibleMoves = { "up", "down", "left", "right" };
-            ArrayList<Integer> okIndices = new ArrayList<>();
-
-            for (int k=0; k<possibleMoves.length; k++) {
-                Posn dir = Posn.ALL_DIRECTIONS[k];
-                Posn new_head = headP.add(dir);
-
-                boolean inBounds = (0 <= new_head.x && new_head.x < width && 0 <= new_head.y && new_head.y < height);
-                boolean hitSelf = body.contains(new_head);
-
-                if (inBounds && ! hitSelf) {
-                    okIndices.add(k);
-                }
-            }
-
-            // Choose a random direction to move in
-            int choiceIndex = new Random().nextInt(okIndices.size());
-            int choice = okIndices.get(choiceIndex);
-
-            String move = possibleMoves[choice];
-
-            LOG.info("MOVE {}", move);
-
-            Map<String, String> response = new HashMap<>();
-            response.put("move", move);
-            return response;
-        }
-
-        /**
-         * This method is called when a game your Battlesnake was in ends.
-         * 
-         * It is purely for informational purposes, you don't have to make any decisions
-         * here.
-         *
-         * @param endRequest a map containing the JSON sent to this snake. Use this data
-         *                   to know which game has ended
-         * @return responses back to the engine are ignored.
-         */
-        public Map<String, String> end(JsonNode endRequest) {
-
-            LOG.info("END");
-            return EMPTY;
-        }
     }
 
 }
