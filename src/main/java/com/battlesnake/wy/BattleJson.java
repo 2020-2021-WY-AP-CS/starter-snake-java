@@ -58,7 +58,8 @@ public class BattleJson {
     }
 
     public static String getStr(JsonNode j, String key) {
-        return j.get(key).asText();
+        JsonNode value = j.get(key);
+        return (value==null)? "" : value.asText();
     }
     public static int getInt(JsonNode j, String key) {
         return j.get(key).asInt();

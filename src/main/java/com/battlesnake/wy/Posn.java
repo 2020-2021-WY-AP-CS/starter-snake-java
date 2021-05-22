@@ -35,12 +35,12 @@ public class Posn implements Comparable<Posn> {
         return new Posn(x + other.x, y + other.y);
     }
 
-    public static final Posn[] ALL_DIRECTIONS = {
-            new Posn(0,1),
-            new Posn(0,-1),
-            new Posn(-1,0),
-            new Posn(1,0)
-    };
+    public static final Posn UP = new Posn(0,1);
+    public static final Posn DOWN = new Posn(0,-1);
+    public static final Posn LEFT = new Posn(-1,0);
+    public static final Posn RIGHT = new Posn(1,0);
+
+    public static final Posn[] ALL_DIRECTIONS = { UP, DOWN, LEFT, RIGHT };
 
     public String asDirectionString() {
         if (x==0 && y==1) { return "up"; }
