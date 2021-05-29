@@ -5,10 +5,7 @@ import java.util.*;
 public class SimpleSnakeAI extends SnakeAI {
     protected SnakeRandom srnd = new SnakeRandom();
 
-    @Override
-    public Map<String, String> move(Game game, int turn, Board board, Battlesnake you) {
-        Map<String, String> response = new HashMap<>();
-
+    public ArrayList<Posn> getSafeMoves(Board board, Battlesnake you) {
         Posn head = you.head();
         List<Posn> body = you.body();
 
@@ -21,7 +18,14 @@ public class SimpleSnakeAI extends SnakeAI {
                 moves.add(dir);
             }
         }
+        return moves;
+    }
 
+    @Override
+    public Map<String, String> move(Game game, int turn, Board board, Battlesnake you) {
+        Map<String, String> response = new HashMap<>();
+
+        ArrayList<Posn> moves = getSafeMoves(board, you);
         Posn choice = srnd.get_random_move(moves, Posn.UP);
         response.put("move", choice.asDirectionString());
 

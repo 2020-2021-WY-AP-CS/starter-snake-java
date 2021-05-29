@@ -1,0 +1,13 @@
+
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>exec-maven-plugin</artifactId>
+    <configuration>
+        <executable>java</executable>
+        <arguments>
+            <argument>-classpath</argument>
+            <classpath/>
+            <argument>com.battlesnake.wy.Snake</argument>
+        </arguments>
+    </configuration>
+</plugin>
